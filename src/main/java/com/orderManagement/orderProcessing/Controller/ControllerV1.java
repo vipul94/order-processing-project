@@ -2,6 +2,7 @@ package com.orderManagement.orderProcessing.Controller;
 
 import com.orderManagement.orderProcessing.Entity.Order;
 import com.orderManagement.orderProcessing.Service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class ControllerV1 {
     private OrderService orderService;
 
     @PostMapping(path = "/add/order", produces = "application/json")
-    public ResponseEntity<?> addOrder(@RequestBody Order order) {
+    public ResponseEntity<?> addOrder(@Valid @RequestBody Order order) {
         return orderService.createOrder(order);
     }
 

@@ -29,7 +29,7 @@ public class Order {
     @NotNull
     @JsonProperty(value = "total_amount")
     @Column(name = DatabaseConstants.TOTAL_AMOUNT)
-    public int totalAmount;
+    public Integer totalAmount;
 
     @NotNull
     @JsonProperty(value = "items")
@@ -75,11 +75,11 @@ public class Order {
         this.customerName = customerName;
     }
 
-    public int getTotalAmount() {
+    public Integer getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(int totalAmount) {
+    public void setTotalAmount(Integer totalAmount) {
         this.totalAmount = totalAmount;
     }
 

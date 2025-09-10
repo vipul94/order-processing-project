@@ -39,8 +39,6 @@ public class OrderService {
     private RedisTemplate<String, Object> redisTemplate;
 
     public ResponseEntity<?> createOrder(Order order) {
-        //TODO: add validation
-        // add validation
 
         try {
             order.setOrderStatus("PENDING");
@@ -58,7 +56,7 @@ public class OrderService {
             return Response.getResponse(ResponseConstants.ORDER_PROCESSING_FAILURE , HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return Response.getResponse(ResponseConstants.ORDER_PROCESSING_SUCCESSFUL, HttpStatus.ACCEPTED);
+        return Response.getResponse(ResponseConstants.ORDER_PROCESSING_SUCCESSFUL, HttpStatus.OK);
     }
 
     public ResponseEntity<?> fetchPagenatedOrder(String customerName, Integer page, Integer size) {
@@ -85,8 +83,10 @@ public class OrderService {
 
             try {
                 Object cached = redisTemplate.opsForValue().get(cacheKey);
-                if (cached != null && cached instanceof Order) {
-                    Order cachedOrder = (Order) cached;
+                if (cached != null && cached instanceof Map) {
+                    Map<String, Object> map = (Map<String, Object>) cached;
+                    Order cachedOrder = new ObjectMapper().convertValue(map, Order.class);
+
                     logger.info("Cache hit for orderId={}", orderId);
                     return Response.getResponse(ResponseConstants.ORDER_FETCH_SUCCESSFUL, HttpStatus.OK, cachedOrder.getOrderStatus());
                 }
@@ -115,6 +115,7 @@ public class OrderService {
     }
 
     public ResponseEntity<?> updateOrderStatusSync(Long orderId, String status) {
+        System.out.println("");
         try {
             orderRepository.updateOrderStatus(orderId, status);
 

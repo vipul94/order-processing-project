@@ -84,7 +84,7 @@ public class SqsConsumerService {
     }
 
     private void processMessage(Map<String, String> messageMap) {
-        orderService.updateOrderStatusSync(Long.valueOf(messageMap.get("orderId")) ,messageMap.get("orderStatus"));
+        orderService.updateOrderStatusSync(Long.valueOf(messageMap.get("OrderId")) ,messageMap.get("orderStatus"));
         logger.info("Processing orderId={} done!", messageMap.get("orderId"));
     }
 }
