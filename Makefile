@@ -1,6 +1,6 @@
 # Makefile for Order Processing Project
 
-# 🐳 Docker (Redis + LocalStack)
+# 🐳 Docker (LocalStack)
 up:
 	docker compose up -d
 
