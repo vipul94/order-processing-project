@@ -10,6 +10,22 @@ down:
 logs:
 	docker compose logs -f
 
+# Install MySQL using Homebrew
+install-mysql:
+	brew install mysql
+
+# Start MySQL service
+start-mysql:
+	brew services start mysql
+
+# Stop MySQL service
+stop-mysql:
+	brew services stop mysql
+
+# Restart MySQL service
+restart-mysql:
+	brew services restart mysql
+
 # 🗄️ Database Setup (LOCAL MySQL, not Docker)
 db-init:
 	mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS order_processing; USE order_processing; \

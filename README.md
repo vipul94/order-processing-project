@@ -24,6 +24,7 @@ This project demonstrates:
 
 ## 📂 Project Structure
 
+```
 order-processing-project/
 │── src/main/java/com/orderManagement/orderProcessing/
 │ ├── Controller/ # REST Controllers
@@ -37,8 +38,9 @@ order-processing-project/
 │ ├── application.properties # App configuration
 │
 │── pom.xml # Maven dependencies
+|── Makefile # Run commands
 └── README.md # Project documentation
-
+```
 
 ## ⚙️ Setup Instructions
 
@@ -47,20 +49,65 @@ order-processing-project/
 git clone https://github.com/vipul94/order-processing-project.git
 cd order-processing-project
 ```
+---
 
 
-### Make sure you have MySQL and Redis running locally:
-mysql -u root -p
+### Resources needed to setup:
+```
+1) MySql - Persistence layer
+2) SQS - Messaging queue
+3) Redis - Caching[Read-through-cache, Write-through-cache]
+```
 
-Data base schema
+- **Run commands in make file to setup the resources**
 
-CREATE TABLE orders (
-    order_id INT AUTO_INCREMENT PRIMARY KEY,
-    customer_name VARCHAR(50) NOT NULL,
-    total_amount INT NOT NULL,
-    order_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    items VARCHAR(500),
-    order_status VARCHAR(20),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE  CURRENT_TIMESTAMP
-);
+---
+
+
+### API Description
+```
+1) To create order in sync.
+
+curl --location 'http://localhost:8080/api/v1/add/order' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--data '{
+    "customer_name": "customer2",
+    "total_amount": 150.0,
+    "items": [
+        {
+            "item_name": "pizza",
+            "quantity": 3,
+            "price": 50.0,
+            "total_amount": 150.0
+        }
+    ],
+    "order_time": "2025-09-10 16:48:23"
+}'
+
+2) To get the orders by customer name with pegenated with querying on DB.
+
+curl --location 'http://localhost:8080/api/v1/fetch/orders/pagenation?customerName=customer2&page=0&size=2' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json'
+
+3) Fetch order status by order_id.
+
+curl --location 'http://localhost:8080/api/v1/fetch/order/status?orderId=7'
+
+4) Update order status in Sync
+
+curl --location --request PATCH 'http://localhost:8080/api/v1/update/order/status/sync?orderId=6' \
+--header 'Content-Type: application/json' \
+--data '{
+    "orderStatus": "SUCCESS"
+}'
+
+5) Update order status Async using SQS queue.
+ 
+curl --location --request PATCH 'http://localhost:8080/api/v1/update/order/status/async?orderId=7' \
+--header 'Content-Type: application/json' \
+--data '{
+    "orderStatus": "SUCCESS"
+}'
+```
